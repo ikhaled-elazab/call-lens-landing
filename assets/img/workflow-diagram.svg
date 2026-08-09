@@ -1,0 +1,65 @@
+<svg viewBox="0 0 1120 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="wfTitle wfDesc">
+  <title id="wfTitle">Call Lens workflow diagram</title>
+  <desc id="wfDesc">Five step process: Ingest, Transcribe and Analyze, Score, Extract Insights, Deliver Coaching.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#14B8A6"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, sans-serif">
+    <!-- connecting line -->
+    <line x1="90" y1="60" x2="1030" y2="60" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="2 6"/>
+
+    <!-- Step template repeated -->
+    <g>
+      <circle cx="90" cy="60" r="34" fill="#0B1E39"/>
+      <text x="90" y="67" fill="#2DD4BF" font-size="20" font-weight="700" text-anchor="middle">1</text>
+      <text x="90" y="120" fill="#0F172A" font-size="15" font-weight="700" text-anchor="middle">Ingest</text>
+      <text x="90" y="142" fill="#475569" font-size="12" text-anchor="middle">
+        <tspan x="90" dy="0">Connects to your</tspan>
+        <tspan x="90" dy="16">dialer or CCaaS</tspan>
+      </text>
+    </g>
+
+    <g>
+      <circle cx="325" cy="60" r="34" fill="#0B1E39"/>
+      <text x="325" y="67" fill="#2DD4BF" font-size="20" font-weight="700" text-anchor="middle">2</text>
+      <text x="325" y="120" fill="#0F172A" font-size="15" font-weight="700" text-anchor="middle">Transcribe &amp; Analyze</text>
+      <text x="325" y="142" fill="#475569" font-size="12" text-anchor="middle">
+        <tspan x="325" dy="0">AI transcribes tone,</tspan>
+        <tspan x="325" dy="16">language, structure</tspan>
+      </text>
+    </g>
+
+    <g>
+      <circle cx="560" cy="60" r="34" fill="#0B1E39"/>
+      <text x="560" y="67" fill="#2DD4BF" font-size="20" font-weight="700" text-anchor="middle">3</text>
+      <text x="560" y="120" fill="#0F172A" font-size="15" font-weight="700" text-anchor="middle">Score</text>
+      <text x="560" y="142" fill="#475569" font-size="12" text-anchor="middle">
+        <tspan x="560" dy="0">Guideline compliance</tspan>
+        <tspan x="560" dy="16">score generated</tspan>
+      </text>
+    </g>
+
+    <g>
+      <circle cx="795" cy="60" r="34" fill="#0B1E39"/>
+      <text x="795" y="67" fill="#2DD4BF" font-size="20" font-weight="700" text-anchor="middle">4</text>
+      <text x="795" y="120" fill="#0F172A" font-size="15" font-weight="700" text-anchor="middle">Extract Insights</text>
+      <text x="795" y="142" fill="#475569" font-size="12" text-anchor="middle">
+        <tspan x="795" dy="0">Objections &amp; risk</tspan>
+        <tspan x="795" dy="16">moments tagged</tspan>
+      </text>
+    </g>
+
+    <g>
+      <circle cx="1030" cy="60" r="34" fill="#14B8A6"/>
+      <text x="1030" y="67" fill="#0B1E39" font-size="20" font-weight="700" text-anchor="middle">5</text>
+      <text x="1030" y="120" fill="#0F172A" font-size="15" font-weight="700" text-anchor="middle">Deliver Coaching</text>
+      <text x="1030" y="142" fill="#475569" font-size="12" text-anchor="middle">
+        <tspan x="1030" dy="0">Manager gets an</tspan>
+        <tspan x="1030" dy="16">actionable rec</tspan>
+      </text>
+    </g>
+  </g>
+</svg>
