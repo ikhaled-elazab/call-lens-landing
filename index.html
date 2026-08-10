@@ -1,331 +1,661 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Call Lens — Conversation Intelligence for Sales & Support Teams</title>
-  <meta name="description" content="Call Lens analyzes 100% of your sales and support calls, scores them against your guidelines, and delivers coaching recommendations operations managers can act on.">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Call Lens — See every conversation. Gain every insight.</title>
+<meta name="description" content="Call Lens reads every recorded call, times every claim to the second, and tells you which ten need you today. Computed measures, timecoded coaching, no invented numbers.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2312181F'/%3E%3Cline x1='4' y1='20' x2='28' y2='20' stroke='%23F6F4EF' stroke-width='1.5'/%3E%3Ccircle cx='11' cy='20' r='2.6' fill='%231E5EFF'/%3E%3Ccircle cx='21' cy='20' r='2.6' fill='%23E8622C'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   TOKENS — light palette on bare :root, dark redefines deltas only
+   ============================================================ */
+:root{
+  --ink:#12181F;
+  --paper:#F6F4EF;
+  --paper-raised:#EDEAE1;
+  --channel-a:#1E5EFF;
+  --channel-b:#E8622C;
+  --channel-b-text:#A83F17;
+  --line:#C9C3B6;
+  --flag:#9A1F18;
+  --ink-soft:#4B5158;
+  --focus:#1E5EFF;
+  --radius:6px;
+  --max-prose:44rem;
+  --max-wide:68rem;
+  --font-display: ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
+  --font-body: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-data: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", "Courier New", monospace;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#F1EEE6;
+    --paper:#0B0F14;
+    --paper-raised:#141B22;
+    --line:#2A3038;
+    --ink-soft:#A9AFB6;
+    --flag:#F0776C;
+    --channel-a:#5B8CFF;
+    --channel-b:#F08A55;
+    --channel-b-text:#F08A55;
+  }
+}
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Call Lens — Conversation Intelligence for Sales & Support Teams">
-  <meta property="og:description" content="Analyze every call, score it against your guidelines, and turn insights into coaching your managers can act on.">
-  <meta property="og:type" content="website">
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.55;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;display:block;}
+a{color:var(--channel-a);}
+::selection{background:var(--channel-a);color:var(--paper);}
 
-  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css">
+.visually-hidden{
+  position:absolute;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;
+}
+
+.skip-link{
+  position:absolute;left:-9999px;top:0;
+  background:var(--channel-a);color:#fff;padding:.6rem 1rem;
+  z-index:100;border-radius:0 0 var(--radius) 0;
+}
+.skip-link:focus{left:0;}
+
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{
+  outline:3px solid var(--focus);
+  outline-offset:2px;
+  border-radius:2px;
+}
+
+/* ---------- Layout helpers ---------- */
+.wrap{max-width:var(--max-wide);margin-inline:auto;padding-inline:1.25rem;}
+.wrap-prose{max-width:var(--max-prose);margin-inline:auto;padding-inline:1.25rem;}
+section{padding-block:clamp(3rem,7vw,6rem);border-bottom:1px solid var(--line);}
+section:last-of-type{border-bottom:none;}
+.eyebrow{
+  font-family:var(--font-data);
+  font-variant-numeric:tabular-nums;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-size:.78rem;
+  color:var(--channel-a);
+  margin:0 0 .75rem;
+}
+h1,h2,h3{
+  font-family:var(--font-display);
+  font-weight:700;
+  letter-spacing:-0.01em;
+  margin:0 0 1rem;
+}
+h1{font-size:clamp(2rem,5.5vw,3.4rem);line-height:1.05;}
+h2{font-size:clamp(1.5rem,3.4vw,2.2rem);line-height:1.15;}
+h3{font-size:1.15rem;line-height:1.3;}
+p{margin:0 0 1rem;}
+.lede{font-size:clamp(1.05rem,1.6vw,1.3rem);color:var(--ink-soft);max-width:38rem;}
+
+.data{
+  font-family:var(--font-data);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:1rem;
+  padding:.85rem 1.5rem;
+  border-radius:var(--radius);
+  text-decoration:none;
+  border:1.5px solid var(--ink);
+  background:var(--ink);
+  color:var(--paper);
+  transition:transform .15s ease, background-color .15s ease;
+}
+.btn:hover{background:var(--channel-a);border-color:var(--channel-a);}
+.btn:active{transform:translateY(1px);}
+.btn-ghost{
+  background:transparent;color:var(--ink);border-color:var(--line);
+}
+.btn-ghost:hover{background:var(--paper-raised);border-color:var(--ink);}
+
+/* ---------- Header ---------- */
+header.site{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-block:.9rem;max-width:var(--max-wide);margin-inline:auto;padding-inline:1.25rem;
+}
+.brand{
+  display:flex;align-items:center;gap:.55rem;
+  font-family:var(--font-display);font-weight:700;font-size:1.1rem;
+  color:var(--ink);text-decoration:none;
+}
+.brand .mark{width:26px;height:16px;flex-shrink:0;}
+.nav-cta{font-size:.9rem;padding:.55rem 1.05rem;}
+
+/* ---------- Hero ---------- */
+.hero{
+  padding-block:clamp(3.5rem,9vw,7rem) clamp(2.5rem,6vw,4rem);
+}
+.hero-tag{
+  font-family:var(--font-data);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.06em;
+  font-size:.95rem;
+  color:var(--channel-a);
+  margin:0 0 1.1rem;
+}
+.hero-actions{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:1.75rem;}
+
+/* ---------- Time axis component (shared) ---------- */
+.axis-scroll{
+  overflow-x:auto;
+  margin-top:2.5rem;
+  padding-bottom:.5rem;
+  scrollbar-color:var(--line) transparent;
+}
+.axis-svg{min-width:640px;width:100%;height:auto;display:block;}
+.axis-rail{stroke:var(--line);stroke-width:1.5;}
+.axis-tick{stroke:var(--line);stroke-width:1;}
+.axis-label{
+  font-family:var(--font-data);
+  font-variant-numeric:tabular-nums;
+  font-size:11px;
+  fill:var(--ink-soft);
+}
+.trace-a{stroke:var(--channel-a);stroke-width:1.6;fill:none;opacity:.75;}
+.trace-b{stroke:var(--channel-b);stroke-width:1.6;fill:none;opacity:.75;}
+.marker{fill:var(--paper);stroke:var(--ink);stroke-width:1.4;}
+.marker.risk{stroke:var(--flag);}
+.leader{stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:2 3;}
+.playhead-group{transform:translateX(0);}
+.playhead-line{stroke:var(--ink);stroke-width:1.4;}
+.playhead-dot{fill:var(--ink);}
+
+@media (prefers-reduced-motion: no-preference){
+  .playhead-group{
+    animation:sweep 4.5s cubic-bezier(.4,0,.2,1) 1 both;
+  }
+  .find-1{animation:reveal .5s ease-out .6s both;}
+  .find-2{animation:reveal .5s ease-out 1.9s both;}
+  .find-3{animation:reveal .5s ease-out 2.9s both;}
+  .find-4{animation:reveal .5s ease-out 3.9s both;}
+}
+@media (prefers-reduced-motion: reduce){
+  .playhead-group{transform:translateX(560px);}
+}
+@keyframes sweep{
+  from{transform:translateX(0);}
+  to{transform:translateX(560px);}
+}
+@keyframes reveal{
+  from{opacity:0;transform:translateY(4px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.axis-caption{
+  font-size:.85rem;color:var(--ink-soft);margin-top:.6rem;
+}
+
+/* ---------- Findings list (accessible, always-visible companion to SVG) ---------- */
+.findings-list{
+  list-style:none;margin:1.75rem 0 0;padding:0;
+  display:grid;gap:1rem;
+}
+.findings-list li{
+  display:grid;grid-template-columns:auto 1fr;gap:.9rem;
+  padding:.9rem 1rem;
+  background:var(--paper-raised);
+  border-radius:var(--radius);
+  border-inline-start:3px solid var(--channel-a);
+}
+.findings-list li.risk{border-inline-start-color:var(--flag);}
+.findings-list .tc{
+  font-family:var(--font-data);font-variant-numeric:tabular-nums;
+  font-weight:600;color:var(--ink);white-space:nowrap;
+}
+.findings-list .lbl{font-weight:600;display:block;margin-bottom:.15rem;}
+.findings-list .try{
+  display:block;margin-top:.4rem;font-size:.92rem;color:var(--ink-soft);
+}
+.findings-list .try b{color:var(--ink);font-weight:600;}
+
+/* ---------- Measures strip ---------- */
+.measures{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));
+  gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  margin-top:2rem;
+}
+.measure{background:var(--paper);padding:1.1rem 1.15rem;}
+.measure .num{
+  font-family:var(--font-data);font-variant-numeric:tabular-nums;
+  font-size:1.5rem;font-weight:700;display:block;
+}
+.measure .lbl{font-size:.82rem;color:var(--ink-soft);}
+
+.outcome-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.5rem;}
+.outcome-pill{
+  font-family:var(--font-data);font-variant-numeric:tabular-nums;
+  font-size:.85rem;border:1px solid var(--line);border-radius:999px;
+  padding:.4rem .9rem;display:inline-flex;gap:.4rem;align-items:center;
+}
+.outcome-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--channel-a);}
+
+/* ---------- Trust list / two-col grid ---------- */
+.grid-2{display:grid;gap:2rem;grid-template-columns:1fr;}
+@media (min-width:820px){.grid-2{grid-template-columns:1fr 1fr;}}
+.fact-group h3{
+  font-family:var(--font-data);text-transform:uppercase;font-size:.9rem;
+  letter-spacing:.06em;color:var(--channel-a);margin-bottom:.85rem;font-weight:700;
+}
+.fact-group ul{margin:0;padding:0;list-style:none;}
+.fact-group li{
+  padding:.55rem 0;border-top:1px solid var(--line);font-size:.98rem;
+}
+.fact-group li:first-child{border-top:none;}
+
+/* ---------- Weeks ---------- */
+.weeks{display:grid;gap:1.5rem;grid-template-columns:1fr;margin-top:2rem;}
+@media (min-width:820px){.weeks{grid-template-columns:repeat(3,1fr);}}
+.week{
+  border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;
+  background:var(--paper-raised);
+}
+.week .wk-num{
+  font-family:var(--font-data);font-variant-numeric:tabular-nums;
+  color:var(--channel-b-text);font-weight:700;font-size:.85rem;
+  text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.6rem;
+}
+
+/* ---------- Roadmap ---------- */
+.roadmap-banner{
+  background:var(--paper-raised);
+  border:1px dashed var(--line);
+  border-radius:var(--radius);
+  padding:1.75rem;
+}
+.roadmap-list{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));
+  gap:1rem;margin-top:1.25rem;list-style:none;padding:0;
+}
+.roadmap-list li{
+  font-size:.95rem;padding:.9rem 1rem;background:var(--paper);
+  border-radius:var(--radius);border:1px solid var(--line);
+}
+.roadmap-list li b{display:block;margin-bottom:.25rem;}
+
+/* ---------- RTL proof block ---------- */
+.rtl-demo{
+  background:var(--ink);color:var(--paper);
+  border-radius:var(--radius);
+  padding:clamp(1.5rem,4vw,2.5rem);
+  margin-top:2rem;
+}
+.rtl-demo[dir="rtl"]{text-align:right;}
+.rtl-demo p{color:var(--paper);opacity:.92;font-size:1.05rem;}
+.rtl-demo .rtl-axis-wrap{margin-top:1.5rem;direction:ltr;overflow-x:auto;padding-bottom:.25rem;}
+.rtl-demo .rtl-axis-wrap svg{min-width:340px;}
+.rtl-note{
+  font-family:var(--font-data);font-size:.8rem;color:var(--channel-b);
+  text-transform:uppercase;letter-spacing:.06em;margin-top:1rem;direction:ltr;text-align:left;
+}
+
+/* ---------- Close ---------- */
+.close-section{text-align:center;}
+.close-section .lede{margin-inline:auto;}
+.close-actions{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:2rem;}
+.close-note{margin-top:1rem;font-size:.88rem;color:var(--ink-soft);}
+
+/* ---------- Footer ---------- */
+footer.site{padding:2.5rem 0;border-top:1px solid var(--line);}
+footer.site .wrap{
+  display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;
+  font-size:.85rem;color:var(--ink-soft);
+}
+footer.site a{color:var(--ink-soft);text-decoration:underline;}
+
+/* ---------- Small screens: guarantee no horizontal scroll on body ---------- */
+@media (max-width:400px){
+  h1{font-size:1.85rem;}
+  .measures{grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));}
+}
+
+/* ---------- Illustration caption ---------- */
+.illus-note{
+  font-size:.82rem;color:var(--ink-soft);
+  border-inline-start:2px solid var(--channel-b);
+  padding-inline-start:.7rem;margin:0 0 1.5rem;
+}
+</style>
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+<a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- ================= HEADER / NAV ================= -->
-  <header class="site-header">
-    <div class="container nav">
-      <a class="brand" href="#top">
-        <img src="assets/img/favicon.svg" alt="" width="28" height="28">
-        <span>Call Lens</span>
-      </a>
+<header class="site">
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="#top">
+      <svg class="mark" viewBox="0 0 32 20" aria-hidden="true">
+        <line x1="1" y1="10" x2="31" y2="10" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="11" cy="10" r="4" fill="none" stroke="var(--channel-a)" stroke-width="2"/>
+        <circle cx="23" cy="10" r="4" fill="none" stroke="var(--channel-b)" stroke-width="2"/>
+      </svg>
+      Call Lens
+    </a>
+    <a class="btn nav-cta" href="#close">Watch it read a week of your own calls</a>
+  </nav>
+</header>
 
-      <nav class="nav-links" aria-label="Primary">
-        <a href="#features">Product</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#coaching">Coaching</a>
-      </nav>
+<main id="main">
 
-      <a class="btn btn-primary nav-cta" href="#demo">Request a Demo</a>
+  <!-- 1. HERO -->
+  <section class="hero" id="top" aria-labelledby="hero-h1">
+    <div class="wrap">
+      <p class="hero-tag data">See every conversation. Gain every insight.</p>
+      <h1 id="hero-h1">Every call is recorded.<br>Almost none are read.</h1>
+      <p class="lede">Call Lens reads all of them, times every claim to the second, and tells you which ten need you today.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#close">Watch it read a week of your own calls</a>
+        <a class="btn btn-ghost" href="#one-call">See what comes back from one call</a>
+      </div>
 
-      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
+      <p class="visually-hidden" id="hero-axis-desc">Illustration: a horizontal timeline representing a call, with two speaker channels and three example findings marked at their timecodes.</p>
+      <div class="axis-scroll">
+        <svg class="axis-svg" viewBox="0 0 680 190" role="img" aria-labelledby="hero-axis-desc" preserveAspectRatio="xMinYMid meet">
+          <line class="axis-rail" x1="20" y1="140" x2="660" y2="140"/>
+          <g class="axis-label">
+            <text x="20" y="160">00:00</text>
+            <text x="180" y="160">00:45</text>
+            <text x="340" y="160">01:30</text>
+            <text x="500" y="160">02:15</text>
+            <text x="620" y="160">03:00</text>
+          </g>
+          <g class="axis-tick">
+            <line x1="20" y1="134" x2="20" y2="146"/>
+            <line x1="180" y1="134" x2="180" y2="146"/>
+            <line x1="340" y1="134" x2="340" y2="146"/>
+            <line x1="500" y1="134" x2="500" y2="146"/>
+            <line x1="660" y1="134" x2="660" y2="146"/>
+          </g>
+          <path class="trace-a" d="M20,110 Q60,95 100,112 T220,108 T340,115 T460,105 T580,112 T660,108"/>
+          <path class="trace-b" d="M20,125 Q80,132 140,120 T280,128 T420,118 T560,126 T660,120"/>
+
+          <g class="find-1">
+            <line class="leader" x1="150" y1="140" x2="150" y2="55"/>
+            <circle class="marker" cx="150" cy="140" r="5"/>
+            <text class="axis-label" x="160" y="45">01:12 competitor mentioned</text>
+          </g>
+          <g class="find-2">
+            <line class="leader" x1="330" y1="140" x2="330" y2="80"/>
+            <circle class="marker risk" cx="330" cy="140" r="5"/>
+            <text class="axis-label" x="340" y="70">02:03 sentiment drop</text>
+          </g>
+          <g class="find-3">
+            <line class="leader" x1="470" y1="140" x2="470" y2="55"/>
+            <circle class="marker" cx="470" cy="140" r="5"/>
+            <text class="axis-label" x="480" y="45">02:44 no next step agreed</text>
+          </g>
+
+          <g class="playhead-group">
+            <line class="playhead-line" x1="20" y1="90" x2="20" y2="150"/>
+            <circle class="playhead-dot" cx="20" cy="90" r="4"/>
+          </g>
         </svg>
-      </button>
+      </div>
+      <p class="axis-caption">Illustration of the output, not a customer's call.</p>
     </div>
+  </section>
 
-    <div class="mobile-menu" id="mobile-menu">
-      <a href="#features">Product</a>
-      <a href="#how-it-works">How It Works</a>
-      <a href="#coaching">Coaching</a>
-      <a class="btn btn-primary" href="#demo">Request a Demo</a>
+  <!-- 2. WHAT COMES BACK FROM ONE CALL -->
+  <section id="one-call" aria-labelledby="one-call-h2">
+    <div class="wrap">
+      <p class="eyebrow">One three-minute call, read in full</p>
+      <h2 id="one-call-h2">This is what comes back — the whole product is in this block.</h2>
+      <p class="illus-note">Illustration of the output for one call. Not a customer's data.</p>
+
+      <ol class="findings-list">
+        <li>
+          <span class="tc data">00:04</span>
+          <span>
+            <span class="lbl">Lead-in silence</span>
+            Four seconds before either side speaks.
+          </span>
+        </li>
+        <li>
+          <span class="tc data">00:47</span>
+          <span>
+            <span class="lbl">First response</span>
+            Employee responds 47 seconds in.
+          </span>
+        </li>
+        <li class="risk">
+          <span class="tc data">01:12</span>
+          <span>
+            <span class="lbl">Coaching moment — competitor mentioned</span>
+            Customer names a competitor's price. Employee moves on without addressing it.
+            <span class="try"><b>Try instead:</b> "What's making you consider them alongside us?"</span>
+          </span>
+        </li>
+        <li class="risk">
+          <span class="tc data">02:44</span>
+          <span>
+            <span class="lbl">Coaching moment — no next step agreed</span>
+            Call ends without a date, a task, or a name attached to either.
+          </span>
+        </li>
+      </ol>
+
+      <div class="outcome-row" role="list" aria-label="Call outcome and sentiment">
+        <span class="outcome-pill data" role="listitem"><span class="dot" aria-hidden="true"></span>Outcome: follow-up agreed</span>
+        <span class="outcome-pill data" role="listitem"><span class="dot" aria-hidden="true" style="background:var(--flag)"></span>Sentiment: 2 of 5, trending down after 01:12</span>
+      </div>
+
+      <div class="measures" role="list" aria-label="Selected computed measures for this call">
+        <div class="measure" role="listitem"><span class="num data">71 / 29</span><span class="lbl">Talk ratio, employee / other</span></div>
+        <div class="measure" role="listitem"><span class="num data">00:47</span><span class="lbl">First response time</span></div>
+        <div class="measure" role="listitem"><span class="num data">00:58</span><span class="lbl">Longest employee streak</span></div>
+        <div class="measure" role="listitem"><span class="num data">2</span><span class="lbl">Open questions asked</span></div>
+        <div class="measure" role="listitem"><span class="num data">164</span><span class="lbl">Employee words per minute</span></div>
+      </div>
+
+      <p style="margin-top:2rem;max-width:38rem;">Every judgment above carries the second it came from. In the product, clicking any of them plays the two seconds that support it — you read the page, then hear the moment, not the other way around.</p>
     </div>
-  </header>
+  </section>
 
-  <main id="main-content">
-    <!-- ================= HERO ================= -->
-    <section class="hero" id="top">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Conversation Intelligence for Revenue &amp; Support Teams</p>
-          <h1>Know What Happened On Every Call.</h1>
-          <p class="section-sub">Call Lens analyzes 100% of your sales and support calls, scores them against your guidelines, and hands your managers coaching recommendations — automatically.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#demo">See Your Calls Analyzed — Book a Demo</a>
-            <a class="btn btn-secondary" href="#how-it-works">Watch a 2-Min Overview</a>
-          </div>
-          <p class="hero-trust">Built for operations, sales, and support leaders who coach at scale.</p>
-        </div>
-        <div class="hero-visual reveal">
-          <div class="glow" aria-hidden="true"></div>
-          <img src="assets/img/dashboard-mockup.svg" alt="Sample Call Lens dashboard showing a call score of 87, talk-time ratio, sentiment trend, and a coaching recommendation card" width="560" height="420">
-        </div>
-      </div>
-    </section>
+  <!-- 3. WHY THE NUMBERS ARE TRUSTWORTHY -->
+  <section aria-labelledby="trustworthy-h2">
+    <div class="wrap-prose">
+      <p class="eyebrow">Computed, not guessed</p>
+      <h2 id="trustworthy-h2">A model would move these between runs. These don't move.</h2>
+      <p>Word-level timings make silence, overlap and response speed measurable, not estimated. The twenty-two measures Call Lens computes are calculated the same way every time — reproducible, and defensible in a performance review. A rep can't argue with a number that doesn't change when you rerun it.</p>
+      <ul>
+        <li>When a measure can't be taken, the call names the reason and is excluded from averages — never counted as zero.</li>
+        <li>Citations are checked against the real transcript before they're stored. A claim pointing at a second that doesn't exist is refused, not shown.</li>
+        <li>Re-running a call adds a version. It never overwrites what a decision was already made on.</li>
+      </ul>
+    </div>
+  </section>
 
-    <!-- ================= STATS STRIP ================= -->
-    <section class="section section-light" aria-label="Illustrative outcomes">
-      <div class="container">
-        <div class="stats-strip reveal">
-          <div>
-            <div class="stat-value">100%</div>
-            <div class="stat-label">of calls reviewed, not just a sample</div>
-          </div>
-          <div>
-            <div class="stat-value">5 min</div>
-            <div class="stat-label">to prep a coaching conversation</div>
-          </div>
-          <div>
-            <div class="stat-value">1 score</div>
-            <div class="stat-label">per call, tied to your own guidelines</div>
-          </div>
-          <div>
-            <div class="stat-value">Real-time</div>
-            <div class="stat-label">risk &amp; sentiment alerts</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= FEATURES / METRICS ================= -->
-    <section class="section section-tinted" id="features">
-      <div class="container">
-        <div class="section-head reveal">
-          <p class="eyebrow">What Call Lens Does</p>
-          <h2>Every Call, Scored. Every Insight, Actionable.</h2>
-          <p class="section-sub">From raw audio to coaching-ready insight — automatically, consistently, at scale.</p>
-        </div>
-
-        <div class="features-grid">
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
-            </div>
-            <h3>Full-Funnel Call Analytics</h3>
-            <p>Every call is transcribed and analyzed for talk-time ratio, sentiment trend, silence gaps, and pacing — so you see patterns manual spot-checks always miss.</p>
-          </article>
-
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            <h3>Automatic Insight Extraction</h3>
-            <p>Call Lens surfaces objections, competitor mentions, risk signals, and commitments the moment they happen — no more digging through call recordings.</p>
-          </article>
-
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-            </div>
-            <h3>Guideline-Based Scoring</h3>
-            <p>Score every call against your own playbook and compliance checklist — not a generic template — so scores reflect what actually matters to your org.</p>
-          </article>
-
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-            </div>
-            <h3>Built-In Coaching Workflows</h3>
-            <p>Each scored call generates a specific, evidence-backed coaching recommendation your managers can act on in minutes, not hours.</p>
-          </article>
-
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
-            </div>
-            <h3>Team &amp; Rep-Level Trends</h3>
-            <p>Track guideline compliance and coaching impact over time, by rep, team, or guideline — so you can prove what coaching is working.</p>
-          </article>
-
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
-            <h3>Real-Time Risk Alerts</h3>
-            <p>Get flagged immediately when a call shows a sentiment dip, missed disclosure, or escalation risk — before it becomes a bigger problem.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= HOW IT WORKS ================= -->
-    <section class="section section-light" id="how-it-works">
-      <div class="container">
-        <div class="section-head center reveal">
-          <p class="eyebrow">How It Works</p>
-          <h2>From Recording to Recommendation in Minutes</h2>
-        </div>
-
-        <div class="workflow-wrap reveal">
-          <img src="assets/img/workflow-diagram.svg" alt="Five step workflow: Ingest, Transcribe and Analyze, Score, Extract Insights, Deliver Coaching" width="1120" height="220">
-        </div>
-
-        <ol class="workflow-mobile-list reveal">
-          <li class="workflow-step">
-            <span class="num">1</span>
-            <div><h3>Ingest</h3><p>Call Lens connects to your dialer, contact center, or conferencing tool and ingests every recorded call automatically.</p></div>
-          </li>
-          <li class="workflow-step">
-            <span class="num">2</span>
-            <div><h3>Transcribe &amp; Analyze</h3><p>AI transcribes each call and analyzes language, tone, and structure against your defined guidelines.</p></div>
-          </li>
-          <li class="workflow-step">
-            <span class="num">3</span>
-            <div><h3>Score</h3><p>Every call receives a guideline compliance score plus flagged metrics (talk ratio, sentiment, key moments).</p></div>
-          </li>
-          <li class="workflow-step">
-            <span class="num">4</span>
-            <div><h3>Extract Insights</h3><p>Objections, risks, and coaching-relevant moments are tagged and surfaced automatically.</p></div>
-          </li>
-          <li class="workflow-step">
-            <span class="num">5</span>
-            <div><h3>Deliver Coaching</h3><p>Managers receive a ready-to-use coaching recommendation, linked to the exact moment in the call.</p></div>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ================= COACHING FOR OPS MANAGERS ================= -->
-    <section class="section section-dark" id="coaching">
-      <div class="container coaching-layout">
-        <div class="section-head reveal">
-          <p class="eyebrow">For Operations Managers</p>
-          <h2>Coach With Evidence, Not Guesswork</h2>
-          <p class="coaching-narrative">Operations managers don't have time to listen to every call — but they're still accountable for every outcome. Call Lens turns that gap into an advantage: every call is scored against your guidelines automatically, and every score comes with the exact transcript moment behind it. Instead of generic feedback, managers open 1:1s with specific, evidence-backed coaching recommendations — turning call review from a bottleneck into a five-minute prep step.</p>
-        </div>
-
-        <div class="coaching-cards">
-          <div class="coaching-card reveal">
-            <h3>Missed Objection Handling</h3>
-            <p>Call Lens flags that a rep skipped the pricing-objection framework on 3 calls this week, with the exact transcript excerpt and a suggested talking-point refresher.</p>
-          </div>
-          <div class="coaching-card reveal">
-            <h3>Sentiment Dip Detected</h3>
-            <p>A support call shows customer sentiment dropping sharply mid-call. Call Lens timestamps the moment and recommends a de-escalation coaching point for the next 1:1.</p>
-          </div>
-          <div class="coaching-card reveal">
-            <h3>Talk-Time Imbalance</h3>
-            <p>A rep is talking 80% of the call. Call Lens flags the imbalance against your guideline benchmark and recommends a discovery-questions coaching drill.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= LEAD CAPTURE / DEMO CTA ================= -->
-    <section class="section cta-section" id="demo">
-      <div class="container cta-layout">
-        <div class="cta-copy reveal">
-          <p class="eyebrow">Request a Demo</p>
-          <h2>See Call Lens On Your Own Calls</h2>
-          <p class="section-sub">Book a 20-minute walkthrough — we'll show guideline scoring and coaching recommendations using a sample call from your industry.</p>
-          <p class="privacy-note">We only use your info to schedule your demo. No spam, ever.</p>
-        </div>
-
-        <form class="lead-form reveal" id="demo-request-form" novalidate>
-          <h3 class="visually-hidden">Demo request form</h3>
-
-          <div id="form-status" class="form-status" aria-live="polite"></div>
-
-          <div class="field">
-            <label for="name">Full Name <span class="required" aria-hidden="true">*</span></label>
-            <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-error">
-            <span class="error-text" id="name-error" data-error-for="name"></span>
-          </div>
-
-          <div class="form-row two-col">
-            <div class="field">
-              <label for="email">Work Email <span class="required" aria-hidden="true">*</span></label>
-              <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-error">
-              <span class="error-text" id="email-error" data-error-for="email"></span>
-            </div>
-            <div class="field">
-              <label for="company">Company <span class="required" aria-hidden="true">*</span></label>
-              <input type="text" id="company" name="company" autocomplete="organization" required aria-describedby="company-error">
-              <span class="error-text" id="company-error" data-error-for="company"></span>
-            </div>
-          </div>
-
-          <div class="form-row two-col">
-            <div class="field">
-              <label for="teamSize">Team Size <span class="required" aria-hidden="true">*</span></label>
-              <select id="teamSize" name="teamSize" required aria-describedby="teamSize-error">
-                <option value="">Select…</option>
-                <option value="1-10">1–10</option>
-                <option value="11-50">11–50</option>
-                <option value="51-200">51–200</option>
-                <option value="201+">201+</option>
-              </select>
-              <span class="error-text" id="teamSize-error" data-error-for="teamSize"></span>
-            </div>
-            <div class="field">
-              <label for="phone">Phone (optional)</label>
-              <input type="tel" id="phone" name="phone" autocomplete="tel" aria-describedby="phone-error">
-              <span class="error-text" id="phone-error" data-error-for="phone"></span>
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-block">Request My Demo</button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a class="brand" href="#top">
-            <img src="assets/img/favicon.svg" alt="" width="28" height="28">
-            <span>Call Lens</span>
-          </a>
-          <p>Conversation Intelligence for teams that coach at scale.</p>
-        </div>
-
-        <div class="footer-col">
-          <h4>Product</h4>
+  <!-- 4. WHAT IT DOES ON EVERY CALL, AUTOMATICALLY -->
+  <section aria-labelledby="inventory-h2">
+    <div class="wrap">
+      <p class="eyebrow">On every call, automatically</p>
+      <h2 id="inventory-h2">The inventory</h2>
+      <div class="grid-2">
+        <div class="fact-group">
+          <h3>Capture</h3>
           <ul>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#coaching">Coaching</a></li>
+            <li>An ingestion API for your dialler or contact-centre platform, or browser upload — MP3, M4A, AAC, WAV, WebM, OGG, FLAC, up to 200MB or 60 minutes.</li>
+            <li>Idempotent submission: a retrying integration cannot create the same call twice.</li>
+            <li>Eleven named processing stages, each visible as pending, running, succeeded, failed or skipped. When one stops, the call says which and why.</li>
+            <li>Audio normalised before analysis; a waveform rendered for the whole call; the player jumps straight to any cited second.</li>
           </ul>
         </div>
-
-        <div class="footer-col">
-          <h4>Company</h4>
+        <div class="fact-group">
+          <h3>Speech and speakers</h3>
           <ul>
-            <li><a href="#top">About</a></li>
-            <li><a href="mailto:hello@calllens.ai">Contact</a></li>
+            <li>Word-level timings — what makes silence, overlap and response speed measurable rather than estimated.</li>
+            <li>United States English and Arabic dialects — Egyptian, Saudi and Emirati — handled natively, not flattened into generic Arabic. See the block below.</li>
+            <li>True dual-channel speaker separation. The employee is identified by name — never "speaker 1".</li>
+            <li>One-click correction when the wrong speaker was marked; every measure recomputes.</li>
           </ul>
         </div>
-
-        <div class="footer-col">
-          <h4>Legal</h4>
+        <div class="fact-group">
+          <h3>Coaching</h3>
           <ul>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
+            <li>Seven moment types: coachable, risk, missed close, no next step agreed, strong discovery, price pushback, competitor mentioned.</li>
+            <li>Each moment carries a "try instead" line — a concrete alternative sentence, not a grade.</li>
+            <li>Risks typed — churn, compliance, competitor, pricing, expectations — and graded low, medium or high.</li>
+            <li>One org-wide feed, filterable by rep, date range, moment type and severity, with totals before you open anything.</li>
+          </ul>
+        </div>
+        <div class="fact-group">
+          <h3>Scoring</h3>
+          <ul>
+            <li>Your own scorecard templates — your criteria, your weights, not a generic one.</li>
+            <li>Scored automatically against measured behaviour, with criterion-level evidence.</li>
+            <li>Honest partial scoring: it reports how many criteria could be evaluated and withholds a total when none could.</li>
+            <li>Changing a scorecard never rewrites scores already given.</li>
           </ul>
         </div>
       </div>
 
-      <div class="footer-bottom">
-        <span>© 2025 Call Lens. All rights reserved.</span>
-        <span>hello@calllens.ai</span>
+      <div class="rtl-demo" lang="ar" dir="rtl">
+        <p>يستمع كول لينس إلى المحادثات باللهجة المصرية والسعودية والإماراتية كلهجات فعلية، لا كعربية عامة. كل ملاحظة تحمل توقيتها بالثواني، وهذا التوقيت لا يتغير اتجاهه أبدًا — لأن الزمن لا يسير إلى الخلف بأي لغة.</p>
+        <div class="rtl-axis-wrap">
+          <svg class="axis-svg" viewBox="0 0 420 90" role="img" aria-label="Illustration: a call timeline inside a right-to-left layout, where the timeline itself still runs left to right." preserveAspectRatio="xMinYMid meet">
+            <line class="axis-rail" x1="15" y1="55" x2="405" y2="55" style="stroke:rgba(246,244,239,.4)"/>
+            <g class="axis-label" style="fill:rgba(246,244,239,.75)">
+              <text x="15" y="75">00:00</text>
+              <text x="185" y="75">01:00</text>
+              <text x="365" y="75">02:00</text>
+            </g>
+            <circle cx="120" cy="55" r="5" fill="none" stroke="var(--channel-a)" stroke-width="2"/>
+            <circle cx="290" cy="55" r="5" fill="none" stroke="var(--channel-b)" stroke-width="2"/>
+          </svg>
+        </div>
+        <p class="rtl-note data">RTL layout · LTR time axis, by design</p>
+        <p class="visually-hidden" lang="en">English translation for screen readers: Call Lens listens in Egyptian, Saudi and Emirati dialect as dialect, not generic Arabic. Every finding still carries its second, and that timecode never changes direction — because time doesn't run backwards in any language.</p>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script src="assets/js/main.js"></script>
+  <!-- 5. WHAT CHANGES IN A MANAGER'S WEEK -->
+  <section aria-labelledby="week-h2">
+    <div class="wrap-prose">
+      <p class="eyebrow">The coverage argument</p>
+      <h2 id="week-h2">The same hours. Five times the calls.</h2>
+      <p>A call reviewed by ear runs in real time. A call reviewed in Call Lens is a summary, five judgments and the flagged moments, each with a timecode: read the page, play the two seconds that matter.</p>
+      <p>Eight calls a person a month, reviewed by ear, or forty, reviewed this way — the same management time. Run it on your own numbers: <strong class="data">5× coverage, roughly the same hours.</strong> Or hold coverage flat and take the hours back instead.</p>
+      <ul>
+        <li>One org-wide coaching feed, filterable by rep, date, moment type and severity — totals and high-severity counts before you open anything.</li>
+        <li>A signed webhook to your CRM as each call completes, with delivery history and a readiness check before you switch it on.</li>
+        <li>CSV export of any filtered call list.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6. TRUST -->
+  <section aria-labelledby="trust-h2">
+    <div class="wrap">
+      <p class="eyebrow">Trust</p>
+      <h2 id="trust-h2">What isolation actually means here</h2>
+      <div class="grid-2">
+        <div class="fact-group">
+          <h3>Isolation</h3>
+          <ul>
+            <li>Tenant isolation is enforced by the database itself on every query, not by application code.</li>
+            <li>The application's own database account was never granted the ability to bypass it.</li>
+            <li>Outside an authorised session, a query returns nothing at all — not someone else's rows.</li>
+          </ul>
+        </div>
+        <div class="fact-group">
+          <h3>Recordings and retention</h3>
+          <ul>
+            <li>Recording links expire on a window you configure.</li>
+            <li>Every authorisation and every refusal is logged — who asked, which call, from which address.</li>
+            <li>Retention set on your contract and visible in the product. Deletion by period, or call by call.</li>
+            <li>Subject erasure produces a receipt of what was removed — and names anything that couldn't be erased, rather than glossing over it.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. A FIRST MONTH -->
+  <section aria-labelledby="month-h2">
+    <div class="wrap">
+      <p class="eyebrow">A first month</p>
+      <h2 id="month-h2">No new phone system. No retraining.</h2>
+      <div class="weeks">
+        <div class="week">
+          <span class="wk-num">Week one</span>
+          <p style="margin:0;">Connect the ingestion API, or start with browser upload. Calls begin moving through the eleven processing stages the same day.</p>
+        </div>
+        <div class="week">
+          <span class="wk-num">Week two</span>
+          <p style="margin:0;">Your scorecards go in — your criteria, your weights, scored against measured behaviour with evidence attached.</p>
+        </div>
+        <div class="week">
+          <span class="wk-num">Week three</span>
+          <p style="margin:0;">The coaching feed has enough calls in it to run a real 1:1 from evidence, not memory.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. IN DEVELOPMENT -->
+  <section aria-labelledby="roadmap-h2">
+    <div class="wrap">
+      <p class="eyebrow">Not shipped yet</p>
+      <h2 id="roadmap-h2">In development</h2>
+      <div class="roadmap-banner">
+        <p style="margin:0;max-width:38rem;">Everything on this page above is live in the product today. The following is not — it is in development or planned, listed here so nothing is implied that isn't real.</p>
+        <ul class="roadmap-list">
+          <li><b>Transcript search</b>Will search text across every call, not just one at a time.</li>
+          <li><b>Ask your calls</b>Will let you ask a question of your call history directly.</li>
+          <li><b>Shared taxonomy library</b>Will let teams share a common set of moment and risk definitions.</li>
+          <li><b>Custom extraction fields</b>Will let you define your own fields for the model to extract per call.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. CLOSE -->
+  <section class="close-section" id="close" aria-labelledby="close-h2">
+    <div class="wrap-prose">
+      <p class="eyebrow">One thing to check</p>
+      <h2 id="close-h2">Read a week of your own calls.</h2>
+      <p class="lede">No pricing tiers to compare. One thing to check — whether it's right.</p>
+      <div class="close-actions">
+        <a class="btn" href="mailto:hello@call-lens.example?subject=Show%20me%20my%20own%20calls&body=We%27d%20like%20to%20see%20Call%20Lens%20read%20a%20week%20of%20our%20own%20calls.%0A%0ACompany%3A%0ATeam%20size%3A%0APhone%20system%20or%20recording%20source%3A">Watch it read a week of your own calls</a>
+      </div>
+      <p class="close-note">Opens an email to arrange a walkthrough on your own recordings. No demo environment, no invented data.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© 2025 Call Lens.</span>
+    <span>Every claim on this page is either a shipping fact or labelled as an illustration or roadmap.</span>
+    <a href="mailto:hello@call-lens.example">hello@call-lens.example</a>
+  </div>
+</footer>
+
 </body>
 </html>
