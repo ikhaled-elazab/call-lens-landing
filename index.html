@@ -341,6 +341,53 @@ header.site{
 .outcome-pill.negative{background:var(--sentiment-neg);}
 .outcome-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--playhead);flex-shrink:0;}
 
+.call-readout{
+  display:grid;
+  gap:1rem;
+  grid-template-columns:1fr;
+  margin:1.5rem 0 1.75rem;
+}
+@media (min-width:820px){.call-readout{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);}}
+.summary-card,.judgment-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.25rem;
+}
+.summary-card h3,.judgment-card h3{
+  font-family:var(--font-data);
+  font-feature-settings:"tnum" 1;
+  font-size:.82rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--primary);
+  margin:0 0 .75rem;
+}
+.summary-card p{margin:0;color:var(--ink-700);}
+.judgment-list{
+  display:grid;
+  gap:.65rem;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.judgment-list li{
+  display:grid;
+  grid-template-columns:minmax(7.5rem,.8fr) minmax(0,1fr) auto;
+  gap:.75rem;
+  align-items:baseline;
+  padding-top:.65rem;
+  border-top:1px solid var(--border);
+  color:var(--ink-700);
+}
+.judgment-list li:first-child{padding-top:0;border-top:none;}
+.judgment-list b{color:var(--ink-900);font-weight:600;}
+.judgment-list .tc{color:var(--playhead);white-space:nowrap;font-size:.9rem;}
+@media (max-width:560px){
+  .judgment-list li{grid-template-columns:1fr auto;}
+  .judgment-list b{grid-column:1 / -1;}
+}
+
 /* ---------- Trust list / two-col grid ---------- */
 .grid-2{display:grid;gap:2rem;grid-template-columns:1fr;}
 @media (min-width:820px){.grid-2{grid-template-columns:1fr 1fr;}}
@@ -549,6 +596,23 @@ footer.site a{color:var(--ink-500);text-decoration:underline;}
         </li>
       </ol>
 
+      <div class="call-readout" aria-label="Illustrative call summary and judgments">
+        <article class="summary-card">
+          <h3>Summary, in the call language</h3>
+          <p>A buyer compared pricing, accepted a follow-up, but left the call without a date or named owner. The useful moment is not the whole call — it is the competitor mention at <span class="data">01:12</span> and the missing next step at <span class="data">02:44</span>.</p>
+        </article>
+        <article class="judgment-card">
+          <h3>Five judgments, each cited</h3>
+          <ul class="judgment-list">
+            <li><b>Wanted</b><span>Compare price and fit</span><span class="tc data">01:12</span></li>
+            <li><b>Can decide</b><span>Not confirmed</span><span class="tc data">01:26</span></li>
+            <li><b>Budget</b><span>Not disclosed</span><span class="tc data">01:44</span></li>
+            <li><b>Timeline</b><span>Firmness unclear</span><span class="tc data">02:11</span></li>
+            <li><b>Ended</b><span>Follow-up agreed</span><span class="tc data">02:44</span></li>
+          </ul>
+        </article>
+      </div>
+
       <div class="outcome-row" role="list" aria-label="Call outcome and sentiment">
         <span class="outcome-pill neutral data" role="listitem"><span class="dot" aria-hidden="true"></span>Outcome: follow-up agreed</span>
         <span class="outcome-pill negative data" role="listitem"><span class="dot" aria-hidden="true"></span>Sentiment: 2 of 5, trending down after 01:12</span>
@@ -680,6 +744,7 @@ footer.site a{color:var(--ink-500);text-decoration:underline;}
             <li>Every authorisation and every refusal is logged — who asked, which call, from which address.</li>
             <li>Retention set on your contract and visible in the product. Deletion by period, or call by call.</li>
             <li>Subject erasure produces a receipt of what was removed — and names anything that couldn't be erased, rather than glossing over it.</li>
+            <li>Data residency options are available.</li>
           </ul>
         </div>
       </div>
